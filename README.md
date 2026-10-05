@@ -113,6 +113,7 @@ Variáveis já definidas no ambiente têm precedência sobre o `.env`.
 ```bash
 npm ci
 npm test
+npm run test:ci
 ```
 
 Os testes usam **Mocha**, **SuperTest** e **Chai**, acessando o app Express diretamente,
@@ -134,8 +135,10 @@ status HTTP, identidade e papel dos usuários, ausência de senha nas respostas 
 O banco em memória é restaurado entre os testes para manter os cenários independentes.
 As credenciais do JSON são exclusivamente de demonstração.
 
-O workflow [`tests.yml`](.github/workflows/tests.yml) executa `npm ci` e `npm test`
+O workflow [`tests.yml`](.github/workflows/tests.yml) executa `npm ci` e `npm run test:ci`
 no GitHub Actions em cada push, pull request ou execução manual, com Node.js 22.
+O comando gera um relatório HTML com Mochawesome em `reports/mochawesome/`, publicado
+como artifact da execução mesmo quando algum teste falha.
 O segredo JWT da pipeline é exclusivo para testes e não deve ser usado em produção.
 
 ### Entrega

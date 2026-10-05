@@ -25,5 +25,13 @@ jobs:
           cache: npm
       - name: Instalar dependencias
         run: npm ci
-      - name: Executar testes
-        run: npm test
+      - name: Executar testes e gerar relatorios
+        run: npm run test:ci
+      - name: Salvando relatório de testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-testes-html-run-${{ github.run_number }}
+          path: reports/mochawesome/
+          if-no-files-found: error
+          retention-days: 30

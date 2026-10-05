@@ -1,0 +1,36 @@
+{
+  "admin": {
+    "email": "admin@escola.com",
+    "senha": "admin123"
+  },
+  "cenarios": [
+    {
+      "nome": "entrega de matematica",
+      "aluno": {
+        "nome": "Aluno Teste Matematica",
+        "email": "teste.matematica@example.com",
+        "matricula": "TESTE001",
+        "senha": "senha-teste-123"
+      },
+      "trabalho": {
+        "disciplinaId": "disciplina-matematica",
+        "titulo": "Lista de Exercicios de Teste",
+        "descricao": "Entrega automatizada de matematica."
+      }
+    },
+    {
+      "nome": "entrega de programacao web",
+      "aluno": {
+        "nome": "Aluno Teste Programacao",
+        "email": "teste.programacao@example.com",
+        "matricula": "TESTE002",
+        "senha": "senha-teste-456"
+      },
+      "trabalho": {
+        "disciplinaId": "disciplina-programacao-web",
+        "titulo": "Projeto Web de Teste",
+        "descricao": "Entrega automatizada de programacao web."
+      }
+    }
+  ]
+}

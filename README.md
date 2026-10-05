@@ -36,6 +36,8 @@ reiniciados sempre que o servidor é reiniciado, voltando ao conjunto de dados f
 - **swagger-ui-express** — renderização do Swagger UI a partir do YAML
 - **cors** — liberação de CORS para consumo por outros clientes/origens
 - **morgan** — log de requisições HTTP no console
+- **dotenv** — carregamento das variáveis de ambiente do arquivo `.env`
+- **Mocha, SuperTest e Chai** — testes automatizados da API com dados em JSON
 - **nodemon** (dependência de desenvolvimento) — reinício automático do servidor durante o
   desenvolvimento
 
@@ -77,7 +79,7 @@ docs/
 
 ## Instalação e execução
 
-Pré-requisito: Node.js 18+ (usa `crypto.randomUUID`, disponível nativamente).
+Pré-requisito: Node.js 18.18+; recomendado Node.js 22, também usado na pipeline.
 
 ```bash
 # instalar dependências
@@ -92,6 +94,57 @@ npm run dev
 
 O servidor sobe por padrão em `http://localhost:3000` (pode ser alterado com a variável de
 ambiente `PORT`).
+
+### Variáveis de ambiente
+
+O projeto carrega `.env` automaticamente com Dotenv, antes de inicializar a autenticação.
+Para configurar localmente no PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Configure `PORT` e `JWT_SECRET` no `.env`. Use um segredo próprio fora do ambiente de
+demonstração. O arquivo `.env` não é versionado; `.env.example` contém apenas valores de exemplo.
+Variáveis já definidas no ambiente têm precedência sobre o `.env`.
+
+## Testes automatizados e pipeline
+
+```bash
+npm ci
+npm test
+```
+
+Os testes usam **Mocha**, **SuperTest** e **Chai**, acessando o app Express diretamente,
+sem precisar executar `npm start`. Os dados estão em
+[`test/data/entregas.json`](test/data/entregas.json): cada cenário gera um teste completo,
+implementando **Data-Driven Testing**.
+
+O fluxo de cada cenário é:
+
+1. Login como administrador usando o helper `loginAdmin`.
+2. Cadastro de um novo aluno pelo administrador.
+3. Matrícula do aluno na disciplina, requisito para entregar trabalhos.
+4. Login com as credenciais do aluno usando o helper `loginUsuario`.
+5. Registro da entrega com o token do aluno e verificação do status `entregue`.
+6. Consulta dos trabalhos do aluno para confirmar que a entrega foi armazenada.
+
+Os helpers estão em [`test/helpers/login.js`](test/helpers/login.js). Os testes verificam
+status HTTP, identidade e papel dos usuários, ausência de senha nas respostas e dados da entrega.
+O banco em memória é restaurado entre os testes para manter os cenários independentes.
+As credenciais do JSON são exclusivamente de demonstração.
+
+O workflow [`tests.yml`](.github/workflows/tests.yml) executa `npm ci` e `npm test`
+no GitHub Actions em cada push, pull request ou execução manual, com Node.js 22.
+O segredo JWT da pipeline é exclusivo para testes e não deve ser usado em produção.
+
+### Entrega
+
+- Repositório: https://github.com/Lucas-AVNogueira/gestao-de-alunos-api
+- Pipeline: https://github.com/Lucas-AVNogueira/gestao-de-alunos-api/actions/workflows/tests.yml
+
+Após publicar as alterações no GitHub, confirme que a execução do workflow está verde
+antes de entregar o link do repositório.
 
 ## Documentação da API (Swagger)
 
